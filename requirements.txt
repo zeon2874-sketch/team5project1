@@ -1,7 +1,9 @@
 pandas
 numpy
+matplotlib
+koreanize-matplotlib
 scikit-learn
-streamlit
+streamlit>=1.31.0
 folium
 streamlit-folium
 plotly
