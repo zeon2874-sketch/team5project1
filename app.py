@@ -7,8 +7,6 @@ from streamlit_folium import folium_static
 import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.preprocessing import MinMaxScaler
-import koreanize_matplotlib
-import matplotlib.pyplot as plt
 
 # 페이지 설정
 st.set_page_config(page_title="서울 신혼부부 최적 주거지 추천 (고도화)", layout="wide")
