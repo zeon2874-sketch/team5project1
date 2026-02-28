@@ -1,4 +1,3 @@
-df = pd.read_csv("data/analysis_base_table.csv")
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -29,23 +28,36 @@ GU_COORDS = {
 
 @st.cache_data
 def load_data():
-    """데이터 로드 및 기본 전처리 (로컬 및 배포 환경 대응)"""
-    # 파일 경로 후보군 (GitHub 업로드 구조 고려)
+    """데이터 로드 및 기본 전처리 (인코딩 대응 및 경로 최적화)"""
+    # 파일 경로 후보군
     paths = [
+        'data/analysis_base_table.csv',
         'outputs/analysis_base_table.csv',
+        'analysis_base_table.csv',
         'team5/outputs/analysis_base_table.csv',
-        '../outputs/analysis_base_table.csv'
+        'team5/data/analysis_base_table.csv'
     ]
     
+    encodings = ['utf-8-sig', 'cp949', 'euc-kr', 'utf-8']
+    
+    target_path = None
     for path in paths:
         if os.path.exists(path):
-            try:
-                df = pd.read_csv(path)
-                return df
-            except Exception as e:
-                st.error(f"파일을 읽는 중 오류가 발생했습니다 ({path}): {e}")
-    
-    st.error("데이터 파일(analysis_base_table.csv)을 찾을 수 없습니다. 경로를 확인해 주세요.")
+            target_path = path
+            break
+            
+    if not target_path:
+        st.error("⚠️ 데이터를 찾을 수 없습니다. (analysis_base_table.csv 파일이 data 폴더 또는 루트에 있는지 확인해 주세요)")
+        return None
+        
+    for enc in encodings:
+        try:
+            df = pd.read_csv(target_path, encoding=enc)
+            return df
+        except Exception:
+            continue
+            
+    st.error(f"⚠️ 파일 로드 실패: `{target_path}`의 인코딩을 인식할 수 없습니다.")
     return None
 
 def calculate_scores(df, weights):
